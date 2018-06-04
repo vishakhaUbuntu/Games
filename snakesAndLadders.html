@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .grid { margin:1em auto;border-collapse: collapse;}
+            .grid td {
+                cursor:pointer;
+                width:50px; height:50px;
+                border:1px solid #ccc;
+            }
+            #point1
+            {
+                left: 10px;
+                right: 30px;
+                background-color: red;
+            }
+            #point2
+            {
+                left: 300px;
+                right: 500px;
+                background-color: blue;
+            }
+            #line
+            {
+                background-color: black;
+                position: absolute;
+                height:2px;
+            }
+            
+        </style>
+    </head>
+    <body>
+        
+        <script>
+            var snakes = []; var ladders = [];
+            var grid = clickableGrid(10,10);
+            document.body.appendChild(grid);
+            getNoOfSnakesAndLadders();
+            //getCoords(34, 12, 'ladder');
+            //getCoords(72, 50, 'ladder');
+            //getCoords(38, 27, 'snake');
+            //getCoords(88, 77, 'snake');
+            //getCoords(91, 80, 'snake');
+    function getNoOfSnakesAndLadders()
+    {
+        var noOfLadders = prompt("Enter number of ladders", "");
+        var noOfSnakes = prompt("Enter number of snakes", "");
+        partionForLadders = Math.floor(100 / (parseInt(noOfLadders)+3));
+        if(partionForLadders % 2 != 0)
+            partionForLadders += 1;
+        partionForSnakes = Math.floor(100 / (parseInt(noOfSnakes)+3));
+        if(partionForSnakes % 2 != 0)
+            partionForSnakes += 1;
+        
+        ii = 2; xCoord = partionForLadders;
+        for(i = 1; i<=noOfLadders; i++)
+        { 
+            xCoord = partionForLadders + ii;
+            getCoords(xCoord+22, xCoord, 'ladder');
+            ii = ii+4;
+        }
+        
+        yy = 3;
+        for(j = 1; j<=noOfSnakes; j++)
+        {
+            yCoord = partionForSnakes + yy;
+            getCoords(yCoord+12, yCoord, 'snake');
+            yy = yy+8;
+        }
+    }
+            
+    function clickableGrid(rows, cols){
+            var i=101; var j= 100;
+            var grid = document.createElement('table');
+            grid.className = 'grid';
+            for (var r=1;r<=rows;++r){
+                if((r%2) == 0)
+                    j = i-cols;
+                else if((r%2) != 0 && r != 1)
+                    i = j - cols;
+            var tr = grid.appendChild(document.createElement('tr'));
+            for (var c=1;c<=cols;++c){
+            var cell = tr.appendChild(document.createElement('td'));
+                if((r%2) == 0){ 
+                    cell.id = j++;
+                    cell.innerHTML = cell.id;
+                }
+                else{
+                    cell.id = --i;
+                    cell.innerHTML = cell.id;
+                }
+        }
+    }
+return grid;
+}
+            
+    function createLineElement(x, y, length, angle) {
+            var line = document.createElement("div");
+            var styles = 'border: 1px solid black; '
+               + 'width: ' + length + 'px; '
+               + 'height: 0px; '
+               + '-moz-transform: rotate(' + angle + 'rad); '
+               + '-webkit-transform: rotate(' + angle + 'rad); '
+               + '-o-transform: rotate(' + angle + 'rad); '  
+               + '-ms-transform: rotate(' + angle + 'rad); '  
+               + 'position: absolute; '
+               + 'top: ' + y + 'px; '
+               + 'left: ' + x + 'px; ';
+            line.setAttribute('style', styles);  
+    return line;
+}
+
+    function createLine(x1, y1, x2, y2) {
+    var a = x1 - x2,
+        b = y1 - y2,
+        c = Math.sqrt(a * a + b * b);
+
+    var sx = (x1 + x2) / 2,
+        sy = (y1 + y2) / 2;
+
+    var x = sx - c / 2,
+        y = sy;
+
+    var alpha = Math.PI - Math.atan2(-b, a);
+
+    return createLineElement(x, y, c, alpha);
+}
+    
+    function getCoords(startNo, endNo, snakeOrLadder){
+        var rect = document.getElementById(startNo).getBoundingClientRect();
+        var rect2 = document.getElementById(endNo).getBoundingClientRect();
+        var x1 = rect.left + 10; var y1 = rect.top + 10;
+        var x2 = rect2.left + 10; var y2 = rect2.top + 10;
+        var element = createLine(x1, y1, x2, y2);
+        document.body.appendChild(element);
+        if(snakeOrLadder == "snake")
+        {
+            snakes.push(startNo);
+            element.style.border = "1px solid red";
+        }
+        if(snakeOrLadder == "ladder")
+        {
+            ladders.push(endNo);
+            element.style.border = "1px solid green";
+        }
+    }
+         
+            var playerVal = 0; 
+            function randomNo(){
+            var num = Math.floor(Math.random() * 6) + 1  ;
+            document.getElementById("diceVal").innerHTML = num; 
+            if(playerVal != 0){
+                var ele = document.getElementById(playerVal);
+                ele.style.backgroundColor = "white";
+            }
+             playerVal=playerVal+num;
+             var ele = document.getElementById(playerVal);
+             ele.style.backgroundColor = "yellow";
+
+             for(i = 0; i< ladders.length; i++)
+             {
+             if(ladders[i] == playerVal)
+             {
+                 var ele = document.getElementById(playerVal);
+                ele.style.backgroundColor = "white";
+                playerVal = playerVal + 22;
+                var ele = document.getElementById(playerVal);
+                ele.style.backgroundColor = "yellow";
+             }
+            }
+         for(i = 0; i< snakes.length; i++)
+             {
+             if(snakes[i] == playerVal)
+             {
+                var ele = document.getElementById(playerVal);
+                ele.style.backgroundColor = "white";
+                playerVal = playerVal - 12;
+                var ele = document.getElementById(playerVal);
+                ele.style.backgroundColor = "yellow";
+             }
+         }         
+       }
+           </script>
+            <button onclick="randomNo()">Dice</button>
+            <p id='diceVal'></p>
+    </body>
+</html>
