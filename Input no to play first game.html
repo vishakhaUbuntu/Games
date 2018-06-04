@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Website</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style>
+	   .div1
+	    {
+		position:relative;
+		padding:10%;
+		z-index:0;
+                margin-top: -50px;
+	    }
+	</style>
+    </head>
+    <body>
+	
+     <script>
+	var noOfDivs = prompt("Enter a number less than 8", "");
+	var increment = 3;
+	var colors = ['blue', 'red', 'green', 'teal', 'rosybrown', 'tan', 'plum', 'saddlebrown'];
+
+        for(i = 0; i < noOfDivs; i++){
+        var obj = document.createElement('div');
+        obj.id = i;
+        obj.innerHTML = "Label"+i;
+        obj.style.width = String((100/noOfDivs)-20)+"%";
+        obj.style.height = String((100/noOfDivs)-20)+"%";
+        obj.style.marginLeft = String(i*20)+"px";
+        obj.style.marginTop = "-"+String(obj.style.height/2)+"px";
+        obj.className = "div1";
+        obj.style.background = String(colors[i]);
+  	document.getElementsByTagName('body')[0].appendChild(obj);
+        obj.onclick = function(){
+            var element = document.getElementById(this.id);
+            element.style.zIndex = String(increment++);
+        }
+        }
+
+     </script>
+    </body>
+</html>
+
+
