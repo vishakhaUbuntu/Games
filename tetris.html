@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tetris</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <canvas id="myCanvas" width="240" height="400" style="border:1px solid #000000;"></canvas><br><br><br><br><br><br>
+        Score: <p id="score"></p>
+        <script>
+        var latestScore = 0;
+        document.getElementById('score').innerHTML = latestScore;
+        var context = document.getElementById('myCanvas').getContext('2d');
+        
+        context.fillStyle = 'black';
+        context.fillRect(0,0,240,400);
+        context.scale(20,20);
+        
+        function randomize(){
+            var matrix1 = [
+            [0,1,0],
+            [0,1,0],
+            [0,1,0],
+        ]
+        var matrix2 = [
+            [0,0,0],
+            [0,1,0],
+            [1,1,1],
+        ]
+        var matrix3 = [
+            [1,0, 0],
+            [1,0, 0],
+            [1,1, 1],
+        ]
+        var matrix4 = [
+            [1,1,1],
+            [1,1,1],
+            [1,1,1],
+        ]
+            var num = Math.floor(Math.random() * 4) + 1  ;
+            if(num == 1)
+                return matrix1;
+            if(num == 2)
+                return matrix2;
+            if(num == 3)
+                return matrix3;
+            if(num == 4)
+                return matrix4;
+
+        }
+        var ma = randomize();
+        var matrix = [
+            [0,1,0],
+            [0,1,0],
+            [0,1,0],
+        ]
+        var pos = {x:0,y:-1};
+        function createMatrix(w,h)
+        {
+            const blankMatrix = [];
+            for(let i = 0; i<h; i++){
+            blankMatrix.push(new Array(w).fill(0));
+            }
+        return blankMatrix; 
+        }
+        
+        var matrixForCanvas = createMatrix(12,20);
+        var val = 0;
+        function collision()
+        {
+            const [m, o] = [matrix, pos];
+    for(let y = 0; y < m.length; ++y) {
+        for(let x = 0; x < m[y].length; ++x){
+            if(m[y][x] !== 0 &&
+               (matrixForCanvas[y + o.y] && 
+                matrixForCanvas[y + o.y][x + o.x]) !== 0){
+                return true;
+            }
+        }
+    }
+    return false;
+        }
+        
+        function merge()
+        {
+            matrix.forEach((row,y)=>{
+                row.forEach((value,x)=>{
+                    if(value !== 0)
+                    {
+                        matrixForCanvas[y+pos.y][x+pos.x] = value;
+                    }
+                });
+            });
+        }
+        function drawMatrix(matrix, pos)
+        {
+            matrix.forEach((row,y)=>{
+                row.forEach((value,x)=>{
+                    if(value !== 0)
+                    {
+                        context.fillStyle = 'red';
+                        context.fillRect(x+pos.x,y+pos.y,1,1);
+                    }
+                });
+            });
+        }
+
+        function moveLeftRight(dir){
+            pos.x += dir;
+            if(collision()){
+                pos.x -= dir;
+            }
+        }function splice(){
+            
+        }
+        
+        function splice(){
+            for(var i = matrixForCanvas.length - 1; i >= 0; i--){
+                var allOnes = true;
+                for(var j = 0; j <= matrixForCanvas[i].length - 1; j++){
+                    if(matrixForCanvas[i][j] !== 1){
+                        allOnes = false;
+                        break;
+                    }
+                }
+                if(allOnes == true)
+                {
+                    matrixForCanvas.splice(i,1);
+                    matrixForCanvas.splice(0,0,new Array(matrixForCanvas[0].length).fill(0));
+                    drawMatrix(matrixForCanvas, {x: 0, y:0});
+                    document.getElementById('score').innerHTML = latestScore += 10;
+                }
+            }     
+        }
+        var animationFrameId = null;
+        function checkGameOver()
+        {
+            var allZeros = true;
+            for(var i = 0; i < 2; i++){
+                for(var j = 0; j <= matrixForCanvas[i].length - 1; j++){
+                    if(matrixForCanvas[i][j] !== 0){
+                        allZeros = false;
+                        break;
+                    }
+                }
+            }
+            if(!allZeros)
+            {
+                alert("Game Over.");
+                latestScore = 0;
+                cancelAnimationFrame(animationFrameId);
+                matrixForCanvas = createMatrix(12,20);
+                drawMatrix(matrixForCanvas, {x: 0, y:0});
+            }
+        }
+        
+        var dropCounter = 0;
+        var dropInterval = 1000;
+        var lastTime = 0;
+        function updateAnimation(time = 0)
+        {
+        const deltaTime = time - lastTime;
+        lastTime = time;
+        
+        dropCounter += deltaTime;
+        if(dropCounter > dropInterval){
+            ++pos.y;
+            if(collision()){
+               --pos.y;
+               merge();
+               splice(); 
+               checkGameOver();
+               pos.y = 0;
+               pos.x = 5;
+               matrix = randomize();
+           }
+            dropCounter = 0;
+        }
+            context.fillStyle = 'black';
+            context.fillRect(0,0,200,360);
+            drawMatrix(matrixForCanvas, {x: 0, y:0});
+            drawMatrix(matrix, pos);
+            animationFrameId = requestAnimationFrame(updateAnimation);
+        }
+        
+        updateAnimation();
+        
+        document.onkeydown = function(e) {
+        switch (e.keyCode) {
+        case 37://left
+            moveLeftRight(-1);
+            break;
+        case 39: //right
+            moveLeftRight(1);
+            break;
+        case 40: //down
+        {
+            ++pos.y;
+            if(collision()){
+               --pos.y;
+               merge();
+               splice(); 
+               checkGameOver();
+               pos.y = 0;
+               pos.x = 5;
+               matrix = randomize();
+           }
+           dropCounter = 0;
+       }
+            break;
+        }
+    }
+        </script>
+    </body>
+</html>
