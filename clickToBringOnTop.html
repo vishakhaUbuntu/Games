@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Website</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<style>
+	  .div1
+	    {
+		position:relative;
+		background-color:red;
+		width:10%;
+		height:10%;
+		padding:10%;
+    		margin-left:0px;
+		margin-top:0px;
+	    }
+	  .div2
+	    {
+		position:relative;
+		background-color:blue;
+		width:10%;
+		height:10%;
+		left:20px;
+		padding:10%;
+		margin-left:25%;
+		margin-top:-55px;
+	    }
+	  .div3
+	    {
+		position:relative;
+		background-color:green;
+		width:10%;
+		height:10%;
+		padding:10%;
+		margin-left:50%;
+		margin-top:-55px;
+	    }
+	</style>
+    </head>
+    <body>
+	<div id="0" class="div1" onclick="myFunc(this.id)">Label1</div>
+	<div id="1" class="div2" onclick="myFunc(this.id)">Label2</div>
+	<div id="2" class="div3" onclick="myFunc(this.id)">Label3</div>
+
+     <script>
+	var increment = 1;
+	function myFunc(idNew){
+	var element = document.getElementById(idNew);
+	element.setAttribute("style", "z-index:"+String(increment++));
+	element.style.WebkitTransition = 'opacity 1s';
+	element.style.MozTransition = 'opacity 1s';
+     }
+     </script>
+
+    </body>
+</html>
+
+
